@@ -42,28 +42,28 @@
         <tr>
             <td>Account:</td>
             <td>
-                <input type="text" id="account" autocomplete="off" value=""/>
+                <input type="text" id="account" autocomplete="off" value="bridgeittest"/>
             </td>
         </tr>
 
         <tr>
             <td>Realm:</td>
             <td>
-                <input type="text" id="realm" autocomplete="off" value=""/>
+                <input type="text" id="realm" autocomplete="off" value="test.realm"/>
             </td>
         </tr>
 
         <tr>
             <td>Username:</td>
             <td>
-                <input type="text" id="username" autocomplete="off" value=""/>
+                <input type="text" id="username" autocomplete="off" value="testuserdefault"/>
             </td>
         </tr>
 
         <tr>
             <td>Password:</td>
             <td>
-                <input type="password" id="password" autocomplete="off" value=""/>
+                <input type="password" id="password" autocomplete="off" value="password"/>
                 <button type="button" onclick="connect()">Connect</button>
                 <button type="button" onclick="disconnect()">Disconnect</button>
             </td>
@@ -95,6 +95,19 @@
             <td>
                 <input id="message" autocomplete="off"/>
                 <button type="button" onclick="sendMessage()">Send</button>
+            </td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Multi-Service:</td>
+            <td>
+                <button type="button" onclick="saveLocation()">Save Location</button>
             </td>
         </tr>
 
@@ -139,7 +152,7 @@
     }
 
     function getPushNamespace() {
-        return '/push/' + getIdValue('account') + '/realms/' + getIdValue('realm');
+        return '/pushio/' + getIdValue('account') + '/realms/' + getIdValue('realm');
     }
 
     function getPushGroup() {
@@ -151,6 +164,7 @@
     }
 
     function connect() {
+        bridgeit.io.configureHosts(getIdValue('pushHost'));
         bridgeit.xio.push.connect(getPushURL(), getIdValue('username'), getIdValue('password'));
     }
 
@@ -175,11 +189,40 @@
         bridgeit.xio.push.send(getPushGroup(), getIdValue('message'));
     }
 
+    function getRandomInRange(from, to, fixed) {
+        return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
+        // .toFixed() returns string, so ' * 1' is a trick to convert to number
+    }
+
+    function saveLocation() {
+
+        var randomLong = getRandomInRange(-180, 180, 3);
+        var randomLat = getRandomInRange(-90, 90, 3);
+
+        var fakeLocation = {
+            label: 'Socket.io Demo Client',
+            location: {
+                geometry: {
+                    type: 'Point',
+                    coordinates: [randomLong, randomLat]
+                }
+            }
+        };
+
+        console.log('sending fake location', fakeLocation);
+
+        bridgeit.io.location.updateLocation(fakeLocation).then(function (uri) {
+            console.log('location URI: ' + uri);
+        }).catch(function (error) {
+            console.log('could not update lcation: ' + error);
+        });
+    }
+
     //Turns on socket.io debugging in the browser console.
     //    localStorage.debug = '*';
     localStorage.debug = '';
 
-//    connect();
+    //    connect();
 
 </script>
 
