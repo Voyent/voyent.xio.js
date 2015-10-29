@@ -3,12 +3,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <title>Socket.io Messaging Client Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
     <!--<script type="application/javascript" src="/push/socket.io.js"></script>-->
     <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
     <script src="http://bridgeit.github.io/bridgeit.js/src/bridgeit.js"></script>
     <script src="http://bridgeit.github.io/bridgeit.io.js/lib/bridgeit.io.js"></script>
     <script src="http://bridgeit.github.io/bridgeit.xio.js/lib/bridgeit.xio.js"></script>
+    <!--<script src="../../lib/bridgeit.xio.js"></script>-->
 </head>
 <body>
 
@@ -21,7 +26,7 @@
         <tr>
             <td>Scheme:</td>
             <td>
-                <select id="pushScheme" onchange="connect()">
+                <select id="pushScheme">
                     <option value="http://">http://</option>
                     <option value="https://">https://</option>
                 </select>
@@ -31,7 +36,7 @@
         <tr>
             <td>Host:</td>
             <td>
-                <select id="pushHost" onchange="connect()">
+                <select id="pushHost">
                     <option value="dev.bridgeit.io">dev.bridgeit.io</option>
                     <option value="192.168.99.100">192.168.99.100</option>
                     <option value="localhost:55140">localhost:55140</option>
@@ -104,6 +109,19 @@
             <td>
             </td>
         </tr>
+
+        <!--<tr>-->
+            <!--<td>Cloud Push</td>-->
+            <!--<td>-->
+                <!--<input type="checkbox" id="cloudPushRegistered" onclick="toggleCloudPush()"> Registered-->
+            <!--</td>-->
+        <!--</tr>-->
+
+        <!--<tr>-->
+            <!--<td></td>-->
+            <!--<td>-->
+            <!--</td>-->
+        <!--</tr>-->
 
         <tr>
             <td>Multi-Service:</td>
@@ -219,10 +237,21 @@
         });
     }
 
+    function toggleCloudPush() {
+        var cloudPushRegistered = document.getElementById('cloudPushRegistered').checked;
+        console.log('update cloud push checked: ' + cloudPushRegistered);
+        if (cloudPushRegistered) {
+            bridgeit.xio.push.enableCloudPush(getSelectedValue('pushHost'), getIdValue('account'), getIdValue('realm'), {foo: 'bar'});
+        } else {
+            bridgeit.xio.push.disableCloudPush(getSelectedValue('pushHost'), getIdValue('account'), getIdValue('realm'), {foo: 'bar'});
+        }
+    }
+
     //Turns on socket.io debugging in the browser console.
     //    localStorage.debug = '*';
     localStorage.debug = '';
 
+    //Automatically tries to connect when the page loads.
     //    connect();
 
 </script>
