@@ -12,8 +12,8 @@
     <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
     <script src="http://bridgeit.github.io/bridgeit.js/src/bridgeit.js"></script>
     <script src="http://bridgeit.github.io/bridgeit.io.js/lib/bridgeit.io.js"></script>
-    <script src="http://bridgeit.github.io/bridgeit.xio.js/lib/bridgeit.xio.js"></script>
-    <!--<script src="../../lib/bridgeit.xio.js"></script>-->
+    <!--<script src="http://bridgeit.github.io/bridgeit.xio.js/lib/bridgeit.xio.js"></script>-->
+    <script src="../../lib/bridgeit.xio.js"></script>
 </head>
 <body>
 
@@ -111,9 +111,22 @@
         </tr>
 
         <!--<tr>-->
-            <!--<td>Cloud Push</td>-->
+        <!--<td>Cloud Push</td>-->
+        <!--<td>-->
+        <!--<input type="checkbox" id="cloudPushRegistered" onclick="toggleCloudPush()"> Registered-->
+        <!--</td>-->
+        <!--</tr>-->
+
+        <!--<tr>-->
+        <!--<td></td>-->
+        <!--<td>-->
+        <!--</td>-->
+        <!--</tr>-->
+
+        <!--<tr>-->
+            <!--<td>Multi-Service:</td>-->
             <!--<td>-->
-                <!--<input type="checkbox" id="cloudPushRegistered" onclick="toggleCloudPush()"> Registered-->
+                <!--<button type="button" onclick="saveLocation()">Save Location</button>-->
             <!--</td>-->
         <!--</tr>-->
 
@@ -122,19 +135,6 @@
             <!--<td>-->
             <!--</td>-->
         <!--</tr>-->
-
-        <tr>
-            <td>Multi-Service:</td>
-            <td>
-                <button type="button" onclick="saveLocation()">Save Location</button>
-            </td>
-        </tr>
-
-        <tr>
-            <td></td>
-            <td>
-            </td>
-        </tr>
 
     </table>
 
@@ -184,6 +184,12 @@
 
     function connect() {
         bridgeit.io.configureHosts(getIdValue('pushHost'));
+        var addedAt = new Date().getTime();
+        bridgeit.xio.push.addListener(function (payload) {
+            var enhancedMessage = new Date().toISOString() + ' [' + payload.group + '] ' + ': ' + payload.message;
+            console.log(addedAt, enhancedMessage);
+            addMessage(enhancedMessage);
+        });
         bridgeit.xio.push.connect(getPushURL(), getIdValue('username'), getIdValue('password'));
     }
 
@@ -192,12 +198,7 @@
     }
 
     function joinGroup() {
-        var joinedAt = new Date().getTime();
-        bridgeit.xio.push.join(getPushGroup(), function (payload) {
-            var enhancedMessage = new Date().toISOString() + ' [' + payload.group + '] ' + ': ' + payload.message;
-            console.log(joinedAt, enhancedMessage);
-            addMessage(enhancedMessage);
-        });
+        bridgeit.xio.push.join(getPushGroup());
     }
 
     function leaveGroup() {
@@ -210,7 +211,6 @@
 
     function getRandomInRange(from, to, fixed) {
         return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
-        // .toFixed() returns string, so ' * 1' is a trick to convert to number
     }
 
     function saveLocation() {
