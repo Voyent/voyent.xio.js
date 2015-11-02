@@ -38,9 +38,10 @@
             <td>
                 <select id="pushHost">
                     <option value="dev.bridgeit.io">dev.bridgeit.io</option>
-                    <option value="192.168.99.100">192.168.99.100</option>
-                    <option value="localhost:55140">localhost:55140</option>
-                    <option value="192.168.99.100:55140">192.168.99.100:55140</option>
+                    <!--<option value="192.168.86.155:8080">192.168.86.155:8080</option>-->
+                    <!--<option value="192.168.99.100">192.168.99.100</option>-->
+                    <!--<option value="localhost:55140">localhost:55140</option>-->
+                    <!--<option value="192.168.99.100:55140">192.168.99.100:55140</option>-->
                 </select>
             </td>
         </tr>
@@ -84,7 +85,7 @@
         <tr>
             <td>Group:</td>
             <td>
-                <input id="pushGroup" autocomplete="off" value="roomA"/>
+                <input id="pushGroup" autocomplete="off" value=""/>
                 <button type="button" onclick="joinGroup()">Join</button>
                 <button type="button" onclick="leaveGroup()">Leave</button>
             </td>
@@ -100,7 +101,16 @@
             <td>Message:</td>
             <td>
                 <input id="message" autocomplete="off"/>
-                <button type="button" onclick="sendMessage()">Send</button>
+                <button type="button" onclick="sendMessageSocket()">Socket</button>
+                <button type="button" onclick="sendMessageREST()">REST</button>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Cloud Push</td>
+            <td>
+                <button type="button" onclick="registerCloudPush()">Register</button>
+                <button type="button" onclick="unregisterCloudPush()">Unregister</button>
             </td>
         </tr>
 
@@ -109,32 +119,6 @@
             <td>
             </td>
         </tr>
-
-        <!--<tr>-->
-        <!--<td>Cloud Push</td>-->
-        <!--<td>-->
-        <!--<input type="checkbox" id="cloudPushRegistered" onclick="toggleCloudPush()"> Registered-->
-        <!--</td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-        <!--<td></td>-->
-        <!--<td>-->
-        <!--</td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td>Multi-Service:</td>-->
-            <!--<td>-->
-                <!--<button type="button" onclick="saveLocation()">Save Location</button>-->
-            <!--</td>-->
-        <!--</tr>-->
-
-        <!--<tr>-->
-            <!--<td></td>-->
-            <!--<td>-->
-            <!--</td>-->
-        <!--</tr>-->
 
     </table>
 
@@ -186,7 +170,11 @@
         bridgeit.io.configureHosts(getIdValue('pushHost'));
         var addedAt = new Date().getTime();
         bridgeit.xio.push.addListener(function (payload) {
-            var enhancedMessage = new Date().toISOString() + ' [' + payload.group + '] ' + ': ' + payload.message;
+            var theMessage = payload.message;
+            if(payload.message.message){
+                theMessage = payload.message.message;
+            }
+            var enhancedMessage = new Date().toISOString() + ' [' + payload.group + '] ' + ': ' + theMessage;
             console.log(addedAt, enhancedMessage);
             addMessage(enhancedMessage);
         });
@@ -205,46 +193,69 @@
         bridgeit.xio.push.leave(getPushGroup());
     }
 
-    function sendMessage() {
+    function sendMessageSocket() {
         bridgeit.xio.push.send(getPushGroup(), getIdValue('message'));
+    }
+
+    function sendMessageREST() {
+        bridgeit.xio.push.sendREST(
+                getSelectedValue('pushHost'),
+                getIdValue('account'),
+                getIdValue('realm'),
+                getIdValue('pushGroup'),
+                getIdValue('message'))
+                .then(function () {
+                    console.log('push notification sent');
+                })
+                .catch(function (err) {
+                    console.log('error sending push notification', err);
+                });
     }
 
     function getRandomInRange(from, to, fixed) {
         return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
     }
 
-    function saveLocation() {
-
-        var randomLong = getRandomInRange(-180, 180, 3);
-        var randomLat = getRandomInRange(-90, 90, 3);
-
-        var fakeLocation = {
-            label: 'Socket.io Demo Client',
-            location: {
-                geometry: {
-                    type: 'Point',
-                    coordinates: [randomLong, randomLat]
-                }
-            }
-        };
-
-        console.log('sending fake location', fakeLocation);
-
-        bridgeit.io.location.updateLocation(fakeLocation).then(function (uri) {
-            console.log('location URI: ' + uri);
-        }).catch(function (error) {
-            console.log('could not update lcation: ' + error);
-        });
+    function getCloudPushConfiguration() {
+        bridgeit.xio.push.getCloudPushRegistration(
+                getSelectedValue('pushHost'),
+                getIdValue('account'),
+                getIdValue('realm'),
+                getIdValue('username'))
+                .then(function (cloudPushConfiguration) {
+                    console.log('got cloud push configuration', cloudPushConfiguration);
+                })
+                .catch(function (err) {
+                    console.log('error getting cloud push configuration', err);
+                });
     }
 
-    function toggleCloudPush() {
-        var cloudPushRegistered = document.getElementById('cloudPushRegistered').checked;
-        console.log('update cloud push checked: ' + cloudPushRegistered);
-        if (cloudPushRegistered) {
-            bridgeit.xio.push.enableCloudPush(getSelectedValue('pushHost'), getIdValue('account'), getIdValue('realm'), {foo: 'bar'});
-        } else {
-            bridgeit.xio.push.disableCloudPush(getSelectedValue('pushHost'), getIdValue('account'), getIdValue('realm'), {foo: 'bar'});
-        }
+    function registerCloudPush() {
+        bridgeit.xio.push.registerCloudPush(
+                getSelectedValue('pushHost'),
+                getIdValue('account'),
+                getIdValue('realm'),
+                getIdValue('username'))
+                .then(function (resourceURI) {
+                    console.log('enabled cloud push configuration', resourceURI);
+                })
+                .catch(function (err) {
+                    console.log('error enabling cloud push configuration', err);
+                });
+    }
+
+    function unregisterCloudPush() {
+        bridgeit.xio.push.unregisterCloudPush(
+                getSelectedValue('pushHost'),
+                getIdValue('account'),
+                getIdValue('realm'),
+                getIdValue('username'))
+                .then(function (resourceURI) {
+                    console.log('disabled cloud push configuration', resourceURI);
+                })
+                .catch(function (err) {
+                    console.log('error disabling cloud push configuration', err);
+                });
     }
 
     //Turns on socket.io debugging in the browser console.
