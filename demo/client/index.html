@@ -170,12 +170,21 @@
         bridgeit.io.configureHosts(getIdValue('pushHost'));
         var addedAt = new Date().getTime();
         bridgeit.xio.push.addListener(function (payload) {
-            var theMessage = payload.message;
-            if(payload.message.message){
+            console.log('incoming payload', payload);
+
+            var theMessage = payload;
+
+            //Socket.io payload
+            if(payload.message){
+                theMessage = payload.message;
+            }
+
+            //REST payload
+            if(payload.message && payload.message.message){
                 theMessage = payload.message.message;
             }
+
             var enhancedMessage = new Date().toISOString() + ' [' + payload.group + '] ' + ': ' + theMessage;
-            console.log(addedAt, enhancedMessage);
             addMessage(enhancedMessage);
         });
         bridgeit.xio.push.connect(getPushURL(), getIdValue('username'), getIdValue('password'));
