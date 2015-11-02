@@ -37,8 +37,8 @@
             <td>Host:</td>
             <td>
                 <select id="pushHost">
-                    <!--<option value="dev.bridgeit.io">dev.bridgeit.io</option>-->
-                    <option value="192.168.86.155:8080">192.168.86.155:8080</option>
+                    <option value="dev.bridgeit.io">dev.bridgeit.io</option>
+                    <!--<option value="192.168.86.155:8080">192.168.86.155:8080</option>-->
                     <!--<option value="192.168.99.100">192.168.99.100</option>-->
                     <!--<option value="localhost:55140">localhost:55140</option>-->
                     <!--<option value="192.168.99.100:55140">192.168.99.100:55140</option>-->
@@ -49,28 +49,28 @@
         <tr>
             <td>Account:</td>
             <td>
-                <input type="text" id="account" autocomplete="off" value="bridgeittest"/>
+                <input type="text" id="account" autocomplete="off" value=""/>
             </td>
         </tr>
 
         <tr>
             <td>Realm:</td>
             <td>
-                <input type="text" id="realm" autocomplete="off" value="test.realm"/>
+                <input type="text" id="realm" autocomplete="off" value=""/>
             </td>
         </tr>
 
         <tr>
             <td>Username:</td>
             <td>
-                <input type="text" id="username" autocomplete="off" value="testuserdefault"/>
+                <input type="text" id="username" autocomplete="off" value=""/>
             </td>
         </tr>
 
         <tr>
             <td>Password:</td>
             <td>
-                <input type="password" id="password" autocomplete="off" value="password"/>
+                <input type="password" id="password" autocomplete="off" value=""/>
                 <button type="button" onclick="connect()">Connect</button>
                 <button type="button" onclick="disconnect()">Disconnect</button>
             </td>
@@ -85,7 +85,7 @@
         <tr>
             <td>Group:</td>
             <td>
-                <input id="pushGroup" autocomplete="off" value="testuserdefault"/>
+                <input id="pushGroup" autocomplete="off" value=""/>
                 <button type="button" onclick="joinGroup()">Join</button>
                 <button type="button" onclick="leaveGroup()">Leave</button>
             </td>
