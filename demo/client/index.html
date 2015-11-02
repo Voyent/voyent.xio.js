@@ -37,8 +37,8 @@
             <td>Host:</td>
             <td>
                 <select id="pushHost">
-                    <option value="dev.bridgeit.io">dev.bridgeit.io</option>
-                    <!--<option value="192.168.86.155:8080">192.168.86.155:8080</option>-->
+                    <!--<option value="dev.bridgeit.io">dev.bridgeit.io</option>-->
+                    <option value="192.168.86.155:8080">192.168.86.155:8080</option>
                     <!--<option value="192.168.99.100">192.168.99.100</option>-->
                     <!--<option value="localhost:55140">localhost:55140</option>-->
                     <!--<option value="192.168.99.100:55140">192.168.99.100:55140</option>-->
@@ -49,28 +49,28 @@
         <tr>
             <td>Account:</td>
             <td>
-                <input type="text" id="account" autocomplete="off" value=""/>
+                <input type="text" id="account" autocomplete="off" value="bridgeittest"/>
             </td>
         </tr>
 
         <tr>
             <td>Realm:</td>
             <td>
-                <input type="text" id="realm" autocomplete="off" value=""/>
+                <input type="text" id="realm" autocomplete="off" value="test.realm"/>
             </td>
         </tr>
 
         <tr>
             <td>Username:</td>
             <td>
-                <input type="text" id="username" autocomplete="off" value=""/>
+                <input type="text" id="username" autocomplete="off" value="testuserdefault"/>
             </td>
         </tr>
 
         <tr>
             <td>Password:</td>
             <td>
-                <input type="password" id="password" autocomplete="off" value=""/>
+                <input type="password" id="password" autocomplete="off" value="password"/>
                 <button type="button" onclick="connect()">Connect</button>
                 <button type="button" onclick="disconnect()">Disconnect</button>
             </td>
@@ -85,7 +85,7 @@
         <tr>
             <td>Group:</td>
             <td>
-                <input id="pushGroup" autocomplete="off" value=""/>
+                <input id="pushGroup" autocomplete="off" value="testuserdefault"/>
                 <button type="button" onclick="joinGroup()">Join</button>
                 <button type="button" onclick="leaveGroup()">Leave</button>
             </td>
@@ -198,12 +198,23 @@
     }
 
     function sendMessageREST() {
+
+        var pushMessagePayload = {
+            cloud: {
+                subject: "Socket.io Client Test Cloud Notification",
+                details: getIdValue('message')
+            },
+            browser: {
+                message: getIdValue('message')
+            }
+        };
+
         bridgeit.xio.push.sendREST(
                 getSelectedValue('pushHost'),
                 getIdValue('account'),
                 getIdValue('realm'),
                 getIdValue('pushGroup'),
-                getIdValue('message'))
+                pushMessagePayload)
                 .then(function () {
                     console.log('push notification sent');
                 })
