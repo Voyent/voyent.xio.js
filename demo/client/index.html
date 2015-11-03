@@ -185,7 +185,10 @@
                 theMessage = payload.message.message;
             }
 
-            var enhancedMessage = new Date().toISOString() + ' [' + payload.group + '] ' + ': ' + theMessage;
+            var enhancedMessage = new Date().toISOString() +
+                    ' [' + payload.group +
+                    '] ' + payload.username +
+                    ': ' + theMessage;
             addMessage(enhancedMessage);
         });
         bridgeit.xio.push.connect(getPushURL(), getIdValue('username'), getIdValue('password'));
