@@ -1,7 +1,7 @@
 {
-	"name": "bridgeit.xio.js",
+	"name": "voyent.xio.js",
 	"version": "0.0.1",
-	"main": "lib/bridgeit.xio.js",
+	"main": "lib/voyent.xio.js",
 	"ignore": [
 		"docs",
 		"bower.json",
@@ -11,8 +11,8 @@
 		".gitignore"
 	],
 	"dependencies":{
-      "bridgeit.js": "#gh-pages",
-      "bridgeit.io.js": "#dev"
+      "voyent.js": "#gh-pages",
+      "voyent.io.js": "#dev"
 	},
 	"devDependencies":{},
 	"keywords":[

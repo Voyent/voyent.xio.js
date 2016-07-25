@@ -10,10 +10,10 @@
 
     <!--<script type="application/javascript" src="/push/socket.io.js"></script>-->
     <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
-    <script src="http://bridgeit.github.io/bridgeit.js/src/bridgeit.js"></script>
-    <script src="http://bridgeit.github.io/bridgeit.io.js/lib/bridgeit.io.js"></script>
-    <script src="http://bridgeit.github.io/bridgeit.xio.js/lib/bridgeit.xio.js"></script>
-    <!--<script src="../../lib/bridgeit.xio.js"></script>-->
+    <script src="http://voyent.github.io/voyent.js/src/voyent.js"></script>
+    <script src="http://voyent.github.io/voyent.io.js/lib/voyent.io.js"></script>
+    <script src="http://voyent.github.io/voyent.xio.js/lib/voyent.xio.js"></script>
+    <!--<script src="../../lib/voyent.xio.js"></script>-->
 </head>
 <body>
 
@@ -37,7 +37,7 @@
             <td>Host:</td>
             <td>
                 <select id="pushHost">
-                    <option value="dev.bridgeit.io">dev.bridgeit.io</option>
+                    <option value="dev.voyent.io">dev.voyent.io</option>
                     <!--<option value="192.168.86.155:8080">192.168.86.155:8080</option>-->
                     <!--<option value="192.168.99.100">192.168.99.100</option>-->
                     <!--<option value="localhost:55140">localhost:55140</option>-->
@@ -168,9 +168,9 @@
     }
 
     function connect() {
-        bridgeit.io.configureHosts(getIdValue('pushHost'));
+        voyent.io.configureHosts(getIdValue('pushHost'));
         var addedAt = new Date().getTime();
-        bridgeit.xio.push.addListener(function (payload) {
+        voyent.xio.push.addListener(function (payload) {
             console.log('incoming payload', payload);
 
             var theMessage = payload;
@@ -191,27 +191,27 @@
                     ': ' + theMessage;
             addMessage(enhancedMessage);
         });
-        bridgeit.xio.push.connect(getPushURL(), getIdValue('username'), getIdValue('password'));
+        voyent.xio.push.connect(getPushURL(), getIdValue('username'), getIdValue('password'));
     }
 
     function disconnect() {
-        bridgeit.xio.push.disconnect();
+        voyent.xio.push.disconnect();
     }
 
     function refresh() {
-        bridgeit.xio.push.refreshConnection();
+        voyent.xio.push.refreshConnection();
     }
 
     function joinGroup() {
-        bridgeit.xio.push.join(getPushGroup());
+        voyent.xio.push.join(getPushGroup());
     }
 
     function leaveGroup() {
-        bridgeit.xio.push.leave(getPushGroup());
+        voyent.xio.push.leave(getPushGroup());
     }
 
     function sendMessageSocket() {
-        bridgeit.xio.push.send(getPushGroup(), getIdValue('message'));
+        voyent.xio.push.send(getPushGroup(), getIdValue('message'));
     }
 
     function sendMessageREST() {
@@ -226,7 +226,7 @@
             }
         };
 
-        bridgeit.xio.push.sendREST(
+        voyent.xio.push.sendREST(
                 getSelectedValue('pushHost'),
                 getIdValue('account'),
                 getIdValue('realm'),
@@ -245,7 +245,7 @@
     }
 
     function getCloudPushConfiguration() {
-        bridgeit.xio.push.getCloudPushRegistration(
+        voyent.xio.push.getCloudPushRegistration(
                 getSelectedValue('pushHost'),
                 getIdValue('account'),
                 getIdValue('realm'),
@@ -259,7 +259,7 @@
     }
 
     function registerCloudPush() {
-        bridgeit.xio.push.registerCloudPush(
+        voyent.xio.push.registerCloudPush(
                 getSelectedValue('pushHost'),
                 getIdValue('account'),
                 getIdValue('realm'),
@@ -273,7 +273,7 @@
     }
 
     function unregisterCloudPush() {
-        bridgeit.xio.push.unregisterCloudPush(
+        voyent.xio.push.unregisterCloudPush(
                 getSelectedValue('pushHost'),
                 getIdValue('account'),
                 getIdValue('realm'),
