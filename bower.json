@@ -11,8 +11,8 @@
 		".gitignore"
 	],
 	"dependencies":{
-      "voyent.js": "voyent/voyent.js.git#gh-pages",
-      "voyent.io.js": "voyent/voyent.io.js.git#dev"
+      "voyent.js": "https://github.com/voyent/voyent.js.git#gh-pages",
+      "voyent.io.js": "https://github.com/voyent/voyent.io.js.git#dev"
 	},
 	"devDependencies":{},
 	"keywords":[
